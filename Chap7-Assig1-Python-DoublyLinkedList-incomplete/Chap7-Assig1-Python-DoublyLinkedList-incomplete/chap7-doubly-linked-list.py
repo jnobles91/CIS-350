@@ -54,7 +54,7 @@ class DLinkedList:
         temp = self.header.right
         i = 0 #keep track of the index we're at since its not built into the linked list
         #start at the head and then iterate through it until you find the element or reach the end
-        while temp != None:
+        while temp != self.trailer:
             if temp.ele == element:
                 print(f'{element} found at index {i}')
                 return i
@@ -67,37 +67,40 @@ class DLinkedList:
     def insert_after(self,existing_element,new_element):
         temp = self.header.right
         #similar to find function we need to iterate through the list until we find the element we're looking for
-        while temp != existing_element and temp != None:
+        while temp.ele != existing_element and temp != self.trailer:
             temp = temp.right
         #return an error if we get to the end without finding the element we want to insert after
-        if temp == None:
+        if temp == self.trailer:
             print("That element isn't in the list")
         #else insert the new item
         else:
             new = DNode(new_element)
             new.left = temp #element we found in the list is to the left of our new item
             new.right = temp.right #item to the right of the old item is now to the right of our new item
+            temp.right.left = new #element to the right of the element we are inserting after now points to the new element
             temp.right = new #old eleemtn is now to the left of our new element
     
     #reverse list
     def reverse(self):
-        #Start at the back (new front)
-        temp = self.trailer.left
-        #go through the list, and switch the right and left, then go to the next node until we get to the end
-        while temp != None:
-            temp.right, temp.left = temp.left,temp.right
-            temp = temp.right
-
+        self.trailer.left, self.header.right = self.header.right, self.trailer.left #have the header and trailer point to the new front and back
+        self.header.right.right = self.header #was pointing to trailer, now header
+        self.trailer.left.left = self.trailer #was pointing to header, now trailer
+        #there is probably a better way to do this proceeding step, but we're gonna go through and flip everything so I want to make sure everything
+        #is pointing to the right spot at the end
+        current = self.header.right #start at the new head
+        while current != self.trailer:
+            current.right, current.left = current.left, current.right
+            current = current.right
     #add back
     def addBack(self,new_element):
+        old_back = self.trailer.left
         new = DNode(new_element)
-        new.left = self.trailer.left #old back is now to the left of new back
-        self.trailer.right = new #new element to the right of old back
-        self.trailer.left = new #new node is now the back
+        new.left, old_back.right = old_back, new #old back is now to the left of new back
+        self.trailer.left, new.right = new, self.trailer  #new node is now the back
 
     #remove back
     def removeBack(self):
-        if self.trailer.left != None:
+        if self.empty() == False:
             old_back = self.trailer.left #new back will be the item to the left of the old back
             new_back = old_back.left
             self.trailer.left = new_back 
@@ -105,7 +108,7 @@ class DLinkedList:
 
     #remove front
     def removeFront(self):
-        if self.header.right != None:
+        if self.empty() == False:
             old_front = self.header.right
             new_front = old_front.right
             self.header.right = new_front
@@ -145,7 +148,7 @@ if __name__ == "__main__":
         lst.find("PVD")  # Element in the middle
         lst.find("SFO")  # First element
         lst.find("BOS")  # Last element
-        lst.find("MIA")  # Non-existent element
+        print(lst.find("MIA"))  # Non-existent element
         print()
 
         print("--- 4. Testing insert_after() function ---")
