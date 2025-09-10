@@ -38,24 +38,30 @@ class Scores:
         return len(self._entries)
     
     def search_score(self, player_name):
-        for entry in self._entries:
-            if entry.get_name() == player_name:
-                return entry.get_score()
+        for entry in self._entries: #iterate through the list till we find a name matching the one we're looking for
+            if entry.get_name() == player_name: 
+                return entry.get_score() #return the score if we find it
         else:
-            return -1
+            return -1 #return -1 if we don't find that player
     
     def average_max_scores(self):
-        sum = 0
-        for entry in self._entries:
-            sum += entry.get_score()
-        return sum / self._max_entries
+        sum = 0 #create a running sum of all the scores
+        if len(self._entries) > 0: #check to make sure there are entries
+            for entry in self._entries: #iterate through the list adding the scores up
+                sum += entry.get_score()
+            return sum / len(self._entries) #return the average
+        else:
+            return -1 #return -1 if there are no scores
 
     def find_min_max_scores(self):
-        scores = set()
-        for entry in self._entries():
-            scores.add(entry.get_score())
-        min_score, max_score = min(scores), max(scores)
-        return min_score, max_score
+        if len(self._entries) > 0: #check to make sure there are scores
+            scores = set() #create a set to store all of the unique scores
+            for entry in self._entries:
+                scores.add(entry.get_score()) #add the score of each entry to the set
+            min_score, max_score = min(scores), max(scores) #find the minimum and maximum 
+            return min_score, max_score
+        else:
+            return -1,-1 #return an error if there are no scores
 
 
 def insertion_sort(entries, ascending=True):
@@ -93,6 +99,23 @@ if __name__ == "__main__":
     BAM.add(rose)
     BAM.add(jack)
     BAM.add(jill)
+
+    #Testing functions I added
+    #search score
+    print(BAM.search_score("Mike")) #expect 1105
+    print(BAM.search_score("Zelda")) #expect -1
+    print(BAM.average_max_scores()) #expect 725
+    print(BAM.find_min_max_scores()) #expect 510, 1105
+
+    #testing on empty set
+    Empty_Scores = Scores(10)
+    print(Empty_Scores.search_score("Mike")) #expect 1105
+    print(Empty_Scores.search_score("Zelda")) #expect -1
+    print(Empty_Scores.average_max_scores()) #expect 725
+    print(Empty_Scores.find_min_max_scores()) #expect 510, 1105
+
+
+
 
     print("Num of Entries:", BAM.num_ent())
     BAM.print_scores()
