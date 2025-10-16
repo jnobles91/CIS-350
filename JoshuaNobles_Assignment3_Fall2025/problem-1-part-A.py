@@ -46,7 +46,7 @@ class InfixtoPostfixConverter():
             postfix.append(stack.pop())
 
         #convert the postfix list to a string and return
-        return ''.join(postfix)
+        return ' '.join(postfix)
     
 converter = InfixtoPostfixConverter()
 
