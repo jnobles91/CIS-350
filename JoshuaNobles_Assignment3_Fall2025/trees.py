@@ -1,5 +1,6 @@
 #Tree classes from book
 
+
 class Tree:
     class Position:
         def element(self):
@@ -185,28 +186,4 @@ class LinkedBinaryTree(BinaryTree):
             t2._size = 0
 
 
-class ExpressionTree(LinkedBinaryTree):
-    def __init__(self, token, left=None, right=None):
-        super().__init__()
-        if not isinstance(token, str):
-            raise TypeError("Token must be a string")
-        self._add_root(token)
-        if left is not None:
-            if token not in "+-x*/":
-                raise ValueError("token must be valid operator")
-            self._attach(self.root(), left, right)
 
-    def __str__(self):
-        pieces = []
-        self.parenthesize_recur(self.root(), pieces)
-        return "".join(pieces)
-
-    def parenthesize_recur(self, p, result):
-        if self.is_leaf(p):
-            result.append(str(p.element()))
-        else:
-            result.append("(")
-            self.parenthesize_recur(self.left(p), result)
-            result.append(p.element())
-            self.parenthesize_recur(self.right(p), result)
-            result.append(")")
